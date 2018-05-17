@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Runtime.Caching;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Web;
 using System.Web.Mvc;
 using TestAppMVC.Models;
@@ -9,6 +11,22 @@ namespace TestAppMVC.Controllers
 {
     public class HomeController : Controller //inherits the controller baseclass
     {
+        ObjectCache obj = MemoryCache.Default;
+        List<Customer> customers;
+        public HomeController()
+        {
+            customers = obj["customers"] as List<Customer>;
+            if (customers == null)
+            {
+                customers = new List<Customer>();
+
+
+            }
+        }
+        public void Saveobj(){
+                obj["customers"] = customers;
+            }
+            
         public ActionResult Index()
         {
             return View();
@@ -48,11 +66,15 @@ namespace TestAppMVC.Controllers
         {
             return View();
         }
+        public ActionResult AddCustomer(Customer customer)
+        {
+            customer.ID = Guid.NewGuid().ToString();
+            customers.Add(customer);
+            Saveobj();
+            return RedirectToAction("CustomerList");
+        }
         public ActionResult CustomerList()
         {
-            List<Customer> customers = new List<Customer> ();
-            customers.Add(new Customer() { Name = "Fred", Telephone = "91987" });
-            customers.Add(new Customer() { Name = "Jasob", Telephone = "91985" });
             return View(customers);
         }
     }
