@@ -83,6 +83,10 @@ namespace TestAppMVC.Controllers
        [HttpPost]
         public ActionResult AddCustomer(Customer customer)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(customer);
+            }
             customer.ID = Guid.NewGuid().ToString();
             customers.Add(customer);
             Saveobj();
@@ -106,9 +110,13 @@ namespace TestAppMVC.Controllers
             }
         }
         [HttpPost]
-        public ActionResult EditCustomer(Customer customer, string id)
-        {
-            var customertoEdit = customers.FirstOrDefault(c => c.ID == id);
+        public ActionResult EditCustomer(Customer customer, string id) {
+            if (!ModelState.IsValid)
+            {
+                return View(customer);
+            }
+                var customertoEdit = customers.FirstOrDefault(c => c.ID == id);
+
             if (customertoEdit == null)
             {
                 return HttpNotFound();
