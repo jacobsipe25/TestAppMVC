@@ -121,7 +121,37 @@ namespace TestAppMVC.Controllers
                 Saveobj();
                 return RedirectToAction("CustomerList");
             }
+
         }
+        public ActionResult DeleteCustomer(string id)
+        {
+            Customer customer = customers.FirstOrDefault(c => c.ID == id);
+            if (customer == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                return View(customer);
+            }
+        }
+        [HttpPost]
+        [ActionName("DeleteCustomer")]
+        public ActionResult ConfirmDeleteCustomer(string id)
+        {
+            Customer customer = customers.FirstOrDefault(c => c.ID == id);
+            if (customer == null)
+            {
+                return HttpNotFound();
+
+            }
+            else
+            {
+                customers.Remove(customer);
+                return RedirectToAction("CustomerList");
+            }
+        }
+
     }
     //may want more controllers
 
