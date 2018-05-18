@@ -11,6 +11,7 @@ namespace TestAppMVC.Controllers
 {
     public class HomeController : Controller //inherits the controller baseclass
     {
+     
         ObjectCache obj = MemoryCache.Default;
         List<Customer> customers;
         public HomeController()
@@ -26,7 +27,13 @@ namespace TestAppMVC.Controllers
         public void Saveobj(){
                 obj["customers"] = customers;
             }
-            
+        public PartialViewResult Basket()
+        {
+            BasketViewModel model = new BasketViewModel();
+            model.BasketCount = 5;
+            model.BasketTotal = "$100";
+            return PartialView(model);
+        }    
         public ActionResult Index()
         {
             return View();
