@@ -54,18 +54,33 @@ namespace TestAppMVC.Controllers
         //    customer.TelephoneNumber = Telephone;
         //    return View(customer);
         //}
-        public ActionResult ViewCustomer(Customer postedCustomer)
+        //public ActionResult ViewCustomer(Customer postedCustomer)
+        //{
+        //    //Send ID and retrieve 
+        //    Customer customer = new Customer();
+        //    customer.ID = Guid.NewGuid().ToString();
+        //    customer.Name = postedCustomer.Name;
+        //    customer.Telephone = postedCustomer.Telephone;
+        //    return View(customer);
+        //}
+        public ActionResult ViewCustomer(string id)
         {
-            Customer customer = new Customer();
-            customer.ID = Guid.NewGuid().ToString();
-            customer.Name = postedCustomer.Name;
-            customer.Telephone = postedCustomer.Telephone;
-            return View(customer);
+            Customer customer = customers.FirstOrDefault(c => c.ID == id);
+            if (customer == null)
+            {
+                return HttpNotFound();
+           
+            }
+            else
+            {
+                return View(customer);
+            }
         }
         public ActionResult AddCustomer()
         {
             return View();
         }
+       [HttpPost]
         public ActionResult AddCustomer(Customer customer)
         {
             customer.ID = Guid.NewGuid().ToString();
@@ -76,6 +91,36 @@ namespace TestAppMVC.Controllers
         public ActionResult CustomerList()
         {
             return View(customers);
+        }
+        public ActionResult EditCustomer(string id)
+        {
+            Customer customer = customers.FirstOrDefault(c => c.ID == id);
+            if (customer == null)
+            {
+                return HttpNotFound();
+
+            }
+            else
+            {
+                return View(customer);
+            }
+        }
+        [HttpPost]
+        public ActionResult EditCustomer(Customer customer, string id)
+        {
+            var customertoEdit = customers.FirstOrDefault(c => c.ID == id);
+            if (customertoEdit == null)
+            {
+                return HttpNotFound();
+
+            }
+            else
+            {
+                customertoEdit.Name = customer.Name;
+                customertoEdit.Telephone = customer.Telephone;
+                Saveobj();
+                return RedirectToAction("CustomerList");
+            }
         }
     }
     //may want more controllers
